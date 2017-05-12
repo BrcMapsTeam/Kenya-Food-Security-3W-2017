@@ -10,7 +10,7 @@ var config = {
     statusFieldName: "#status",
     interventionFieldName: "#sector+subsector",
     activiteFieldName: "#activity+type",
-    reached: "#reached",
+    affected: "#affected",
     targeted: "#targeted",
     geo:"data/KEN_adm.json",
     joinAttribute:"P_CODE",
@@ -74,7 +74,7 @@ function generate3WComponent(config,data,geom){
     var statusDimension = cf.dimension(function (d) { return d[config.statusFieldName]; });
     var interventionDimension = cf.dimension(function (d) { return d[config.interventionFieldName]; });
     var activiteDimension = cf.dimension(function (d) { return d[config.activiteFieldName]; });
-    var reachedDimension = cf.dimension(function (d) { return d[config.reached]; });
+    var affectedDimension = cf.dimension(function (d) { return d[config.affected]; });
 
     var whoGroup = whoDimension.group();
     var whatGroup = whatDimension.group();
@@ -82,12 +82,12 @@ function generate3WComponent(config,data,geom){
     var statusGroup = statusDimension.group();
     var interventionGroup = interventionDimension.group();
     var activiteGroup = activiteDimension.group();
-    var reachedGroup = reachedDimension.group();
-    var reached = cf.groupAll().reduceSum(function (d) {
-        if (isNaN(d[config.reached])) {
+    var affectedGroup = affectedDimension.group();
+    var affected = cf.groupAll().reduceSum(function (d) {
+        if (isNaN(d[config.affected])) {
             return 0;
         } else {
-            return d[config.reached];
+            return d[config.affected];
         }
     });
     var targeted = cf.groupAll().reduceSum(function (d) {
@@ -140,7 +140,7 @@ function generate3WComponent(config,data,geom){
             .colorAccessor(function(d, i){return 3;})
             .xAxis().ticks(5);
 
-    interventionChart.width($('#intervention').width()).height(150)
+    interventionChart.width($('#intervention').width()).height(300)
             .dimension(interventionDimension)
             .group(interventionGroup)
             .elasticX(true)
@@ -171,9 +171,9 @@ function generate3WComponent(config,data,geom){
             .dimension(cf)
             .group(all);
 
-    dc.dataCount('#reached-info')
+    dc.dataCount('#affected-info')
             .dimension(cf)
-            .group(reached);
+            .group(affected);
 
     dc.dataCount('#targeted-info')
             .dimension(cf)
@@ -235,7 +235,7 @@ function generate3WComponent(config,data,geom){
                             return d['#targeted'];
                         },
                         function (d) {
-                            return d['#reached'];
+                            return d['#affected'];
                         }
                 ])
         //.renderlet(function (table) {
